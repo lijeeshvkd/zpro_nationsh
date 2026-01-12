@@ -1,0 +1,324 @@
+<mvc:View
+    controllerName="zpj.pro.sd.sk.zpronatsaleshead.controller.View1"
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+    xmlns="sap.m"
+    xmlns:ui="sap.ui.table"
+
+    xmlns:tnt="sap.tnt"
+    xmlns:fb="sap.ui.comp.filterbar"
+    
+>
+    <Page class="sapUiLargeMarginBottom">
+        <content>
+            <IconTabBar
+                id="idIconTabBar"
+                headerMode="Standard"
+                stretchContentHeight="true"
+                select="_onFilterSelect"
+                class="sapUiResponsiveContentPadding sapUiLargeMarginBottom"
+            >
+                <items>
+                    <IconTabFilter
+                        icon="sap-icon://expand-all"
+                        count="{count>/Total}"
+                        text="Requests"
+                        key="All"
+                    />
+                    <IconTabSeparator />
+                    <IconTabFilter
+                        icon="sap-icon://lateness"
+                        iconColor="Tile"
+                        text="Pending"
+                        key="Pending"
+                        count="{count>/Pending}"
+                    />
+
+                    <IconTabFilter
+                        icon="sap-icon://accept"
+                        iconColor="Positive"
+                        text="Approved"
+                        key="Approved"
+                        count="{count>/Approved}"
+                    />
+
+                    <IconTabFilter
+                        icon="sap-icon://decline"
+                        iconColor="Critical"
+                        text="Rejected"
+                        key="Rejected"
+                        count="{count>/Rejected}"
+                    />
+                    <IconTabFilter
+                        icon="sap-icon://fob-watch"
+                        iconColor="Critical"
+                        text="Delayed"
+                        key="Delayed"
+                        visible="false"
+                        count="{count>/Delayed}"
+                    />
+                    <IconTabFilter
+                        icon="sap-icon://delete"
+                        iconColor="Negative"
+                        text="Deleted"
+                        key="Deleted"
+                        count="{count>/Deleted}"
+                    />
+                </items>
+                <content>
+                    <fb:FilterBar
+                        id="id.FilterBar"
+                        persistencyKey="myPersKey"
+                        useToolbar="false"
+                        search=".onSearch"
+                        showFilterConfiguration="false"
+                        clear="onFilterBarClear"
+                        showClearOnFB="true"
+                    >
+                        <fb:filterGroupItems>
+                            <fb:FilterGroupItem
+                                name="SalesOffice"
+                                label="Sales Office"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                            >
+                                <fb:control>
+                                    <Input
+                                        id="id.SalesOffice.Input"
+                                        placeholder="Sales Office"
+                                        submit="onSearch"
+                                        showValueHelp="true"
+                                        valueHelpRequest="onSalesOfficeHelp"
+                                        change="onSalesOfficeInputSubmit"
+                                        textFormatMode="ValueKey"
+                                        showSuggestion="true"
+                                        showTableSuggestionValueHelp="false"
+                                        suggest=".onSuggest"
+                                        suggestionRows="{JSONModelForSuggest>/}"
+                                        suggestionItemSelected="onSalesOfficeSuggestionSelect"
+                                    >
+                                        <suggestionColumns>
+                                            <Column
+                                                popinDisplay="Inline"
+                                                demandPopin="true"
+                                            >
+                                                <Label
+                                                    text="Sales Office Code"
+                                                />
+                                            </Column>
+                                            <Column
+                                                popinDisplay="Inline"
+                                                demandPopin="true"
+                                            >
+                                                <Label
+                                                    text="Sales Office Name"
+                                                />
+                                            </Column>
+
+                                            <!-- <core:Item
+                        text="{JSONModelForSuggest_custCode>DomvalueL}"
+                        key="{JSONModelForSuggest_custCode>Ddtext}"
+                    /> -->
+                                        </suggestionColumns>
+                                        <suggestionRows>
+                                            <ColumnListItem>
+                                                <Label
+                                                    text="{JSONModelForSuggest>DomvalueL}"
+                                                />
+                                                <Label
+                                                    text="{JSONModelForSuggest>Ddtext}"
+                                                />
+                                            </ColumnListItem>
+                                        </suggestionRows>
+                                    </Input>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <fb:FilterGroupItem
+                                name="Status"
+                                label="Status"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                                mandatory="true"
+                                visible="false"
+                            >
+                                <fb:control>
+                                    <ComboBox
+                                        id="id.Status.ComboBox"
+                                        selectedKey="P"
+                                    >
+                                        <core:Item
+                                            key="P"
+                                            text="Pending"
+                                        />
+                                        <core:Item
+                                            key="A"
+                                            text="Approved"
+                                        />
+                                        <core:Item
+                                            key="R"
+                                            text="Rejected"
+                                        />
+                                        <core:Item
+                                            key="DL"
+                                            text="Deleted"
+                                        />
+                                    </ComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                             <fb:FilterGroupItem
+                                name="date"
+                                label="Date"
+                                groupName="Group1"
+                                visibleInFilterBar="true"
+                            >
+                                <fb:control>
+                                   
+                                    <DateRangeSelection
+                                        value="{
+				'type': 'sap.ui.model.type.DateInterval',
+				'formatOptions': {
+					'pattern': 'dd/MM/YYYY'
+				},
+				'parts': [
+					{
+						'type': 'sap.ui.model.type.Date',
+						'path': 'dateRange>/start'
+					},
+					{
+						'type': 'sap.ui.model.type.Date',
+						'path': 'dateRange>/end'
+					}
+				]
+			}"
+                                    />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                    <ui:Table
+    id="productsTable"
+    rows="{JSONModelForTable>/}"
+    rowSelectionChange="onClickofItem"
+   selectionMode="Single"
+   selectionBehavior="RowOnly"
+
+    alternateRowColors="true"
+    enableColumnReordering="true"
+    sticky="ColumnHeaders,HeaderToolbar"
+    visibleRowCount="10">
+
+    <ui:extension>
+        <OverflowToolbar id="id.main.TblOT" design="Transparent" width="100%">
+            <content>
+                <Title id="id.View1.Title" text="Products" level="H2"/>
+                <ToolbarSpacer id="id.main.TblTS"/>
+                <Input
+                    id="id.orderNumber.Input"
+                    placeholder="Search PAF No"
+                    submit="onOrderNumber"
+                    liveChange="onOrderNumber"
+                    width="15%">
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow"/>
+                    </layoutData>
+                </Input>
+            </content>
+        </OverflowToolbar>
+    </ui:extension>
+
+    <ui:columns>
+        <ui:Column id="Pafno" width="4rem" hAlign="End" sortProperty="Pafno" >
+            <Text text="PAF No"/>
+            <ui:template>
+                <Text text="{path:'JSONModelForTable>Pafno', formatter:'.formatter.removeLeadingZeros'}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column width="5rem" hAlign="End">
+            <Text text="Vertical"/>
+            <ui:template>
+                <Text text="{path:'JSONModelForTable>Spart', formatter:'.formatter.getVertical'}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column id="Soname" width="5rem" hAlign="End">
+            <Text text="Sales Office"/>
+            <ui:template>
+                <Text text="{JSONModelForTable>Soname}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column id="Name" width="14rem" hAlign="Center">
+            <Text text="Customer"/>
+            <ui:template>
+                <Text text="{JSONModelForTable>Name}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column id="Kunnr"  hAlign="Center">
+            <Text text="Customer ID"/>
+            <ui:template>
+                <Text text="{JSONModelForTable>Kunnr}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column  hAlign="Center" demandPopin="true">
+            <Text text="Order type"/>
+            <ui:template>
+                <Text text="{parts:['JSONModelForTable>Vtweg'], formatter:'.formatter.getOrderType'}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column  hAlign="End" demandPopin="true">
+            <Text text="Total Order"/>
+            <ui:template>
+                <Text text="{JSONModelForTable>WtotalVol}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column  hAlign="End" demandPopin="true">
+            <Text text="Current Order"/>
+            <ui:template>
+                <Text text="{JSONModelForTable>WcurVolFt}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column id="Erdat"  hAlign="Center" demandPopin="true" sortProperty="Erdat">
+            <Text text="Request Date"/>
+            <ui:template>
+                <Text text="{parts:['JSONModelForTable>Erdat'], formatter:'.formatter.getFormattedDate'}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column id="Validity"  hAlign="End" demandPopin="true">
+            <Text text="Validity"/>
+            <ui:template>
+                <Text text="{path:'JSONModelForTable>Validity', formatter:'.formatter.removeLeadingZeros'}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column  hAlign="End" demandPopin="true">
+            <Text text="GM%"/>
+            <ui:template>
+                <tnt:InfoLabel text="{JSONModelForTable>Wgrossmargper} %" renderMode="Loose"
+                               colorScheme="{parts:['JSONModelForTable>Wgrossmargper'], formatter:'.formatter.getGMColor'}"/>
+            </ui:template>
+        </ui:Column>
+
+        <ui:Column  hAlign="Center" demandPopin="true">
+            <Text text="Status"/>
+            <ui:template>
+                <tnt:InfoLabel text="{parts:['JSONModelForTable>Status'], formatter:'.formatter.getStatus'}" renderMode="Loose"
+                               colorScheme="{parts:['JSONModelForTable>Status'], formatter:'.formatter.getStatusColor'}"/>
+            </ui:template>
+        </ui:Column>
+    </ui:columns>
+</ui:Table>
+
+                    
+                </content>
+            </IconTabBar>
+        </content>
+    </Page>
+</mvc:View>

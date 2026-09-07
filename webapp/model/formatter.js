@@ -322,5 +322,80 @@ sap.ui.define([], function () {
         return sValue + " Per Box";
       }
     },
+
+    getFormattedTime: function (time) {
+      if (!time) {
+        return "";
+      }
+
+      if (typeof time === "object" && time !== null && time.ms !== undefined) {
+        var totalMs = Number(time.ms);
+        if (!isNaN(totalMs)) {
+          var totalSeconds = Math.floor(totalMs / 1000);
+          var hours = Math.floor(totalSeconds / 3600);
+          var minutes = Math.floor((totalSeconds % 3600) / 60);
+          var seconds = totalSeconds % 60;
+
+          return (
+            ("0" + hours).slice(-2) +
+            ":" +
+            ("0" + minutes).slice(-2) +
+            ":" +
+            ("0" + seconds).slice(-2)
+          );
+        }
+      }
+
+      var rawTime = time.toString().trim();
+
+      if (rawTime.length === 6 && /^\d{6}$/.test(rawTime)) {
+        rawTime = rawTime.substr(0, 2) + ":" + rawTime.substr(2, 2) + ":" + rawTime.substr(4, 2);
+      }
+
+      var match = rawTime.match(/^\d{1,2}[:.]?\d{2}[:.]?\d{2}?$/);
+      if (!match) {
+        return rawTime;
+      }
+
+      var parts = rawTime.replace(/\./g, ":").split(":");
+      var hours = parseInt(parts[0], 10);
+      var minutes = parseInt(parts[1], 10);
+      var seconds = parseInt(parts[2] || "0", 10);
+
+      if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+        return rawTime;
+      }
+
+      if (hours > 23 || minutes > 59 || seconds > 59) {
+        return rawTime;
+      }
+
+      return (
+        ("0" + hours).slice(-2) +
+        ":" +
+        ("0" + minutes).slice(-2) +
+        ":" +
+        ("0" + seconds).slice(-2)
+      );
+    },
+
+    getDivisionText: function (sString) {
+      if (sString) {
+        switch (sString) {
+          case "10":
+            return "Johnson";
+          case "20":
+            return "Porselano";
+          case "30":
+            return "Marbonite";
+          case "40":
+            return "Endura";
+          default:
+            return sString;
+        }
+      }
+      return sString;
+    },
+
   };
 });
